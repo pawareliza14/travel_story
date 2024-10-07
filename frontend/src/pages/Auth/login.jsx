@@ -1,33 +1,49 @@
-import React, { useState } from 'react'
-import PasswordInput from '../../components/Input/PasswordInput';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
+import PasswordInput from '../../components/PasswordInput';
 import { validateEmail } from '../../utils/helper';
-const login = () => {
 
-  const [email,setEmail]= useState("");
-  const [password,setPassword]=useState("");
-  const [error,setError]=useState(null);
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const navigate=useNavigate()
-
-  const handleLogin=async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if(!validateEmail(email)){
+    if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
       return;
     }
 
-    if(!password){
-      setError("Please enter the password");
+    if (!password) {
+      setError("Please enter the password.");
       return;
     }
+
+    setError("");
+
+    try {
+      const response = await axiosInstance.post("/login", {
+        email: email,
+        password: password,
+      });
+
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    }
   };
-
-  // setError("");
-
-  //Login API
-
 
   return (
     <div className='h-screen bg-cyan-50 overflow-hidden relative'>
@@ -37,7 +53,7 @@ const login = () => {
         <div className='w-2/4 h-[90vh] flex items-end bg-login-bg-img bg-cover bg-center rounded-lg p-10 z-50'>
           <div>
             <h4 className='text-5xl text-white font-semibold leading-[58px]'>
-              Capture Your <br />Journeys.
+              Capture Your <br /> Journeys.
             </h4>
             <p className='text-[15px] text-white leading-6 pr-7 mt-4'>
               Record your travel experiences and memories in your personal travel journal.
@@ -49,38 +65,40 @@ const login = () => {
           <form onSubmit={handleLogin}>
             <h4 className='text-2xl font-semibold mb-7'>Login</h4>
 
-            <input type="text" placeholder='Email' className='input-box' 
-            value={email}
-            onChange={({target})=>{
-              setEmail(target.value);
-            }}
+            <input
+              type="text"
+              aria-label="Email"
+              placeholder='Email'
+              className='input-box'
+              value={email}
+              onChange={({ target }) => setEmail(target.value)}
             />
 
-            <PasswordInput value={password}
-            onChange={({target})=>{
-              setPassword(target.value);
-            }}/>
+            <PasswordInput
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+            />
 
             {error && <p className='text-red-500 text-xs pb-1'>{error}</p>}
 
             <button type='submit' className='btn-primary'>
               LOGIN
-              </button>
+            </button>
 
             <p className='text-xs text-slate-500 text-center my-4'>Or</p>
 
-            <button type='submit'
-            className='btn-primary btn-light'
-            onClick={()=>{
-              navigate("/signUp");
-            }}>
+            <button
+              type='button'
+              className='btn-primary btn-light'
+              onClick={() => navigate("/signUp")}
+            >
               CREATE ACCOUNT
             </button>
           </form>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default login
+export default Login;
