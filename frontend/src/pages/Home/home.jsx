@@ -1,6 +1,10 @@
 import React from 'react'
+<<<<<<< HEAD
 import Navbar from '../../components/Input/Navbar'
 import { useNavigate } from 'react-router-dom'
+=======
+import Navbar from '../../components/Navbar'
+>>>>>>> a85279fc3301f4fded37cea2e6873cdff3587ac7
 const Home = () => {
   const navigate =useNavigate()
 

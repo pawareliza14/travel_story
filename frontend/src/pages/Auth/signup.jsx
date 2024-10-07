@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import PasswordInput from '../../components/Input/PasswordInput';
+import PasswordInput from '../../components/PasswordInput.jsx';
 import { useNavigate } from 'react-router-dom';
-import { validateEmail } from '../../utils/helper';
+import { validateEmail } from '../../utils/helper.js';
 const SignUp = () => {
   const [name,setName]= useState("");
   const [email,setEmail]= useState("");
