@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 import Navbar from '../../components/Navbar';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from "../../utils/axiosInstance";
 import { useState } from 'react';
+import axiosInstance from '../../utils/axiosInstance';
 const Home = () => {
   const navigate =useNavigate()
 

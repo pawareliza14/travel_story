@@ -1,7 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import LOGO from '../assets/images/travel-icon.png';
-import ProfileInfo from './Cards/ProfileInfo';
+import ProfileInfo from './Cards/ProfileInfo.jsx';
+
 
 const Navbar = ({ userInfo }) => {  // Pass userInfo as a prop if needed
 
