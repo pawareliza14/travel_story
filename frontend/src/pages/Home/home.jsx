@@ -55,6 +55,13 @@ const Home = () => {
 
   // Handle update favourite
   const updateIsFavourite = async (storyData) => {
+    const storyId=storyData._id;
+
+    try {
+      
+    } catch (error) {
+      
+    }
     // Update favourite logic here
   };
 
@@ -101,6 +108,29 @@ const Home = () => {
       </div>
     </div>
   );
+
+
+  {/*Add & edit travel story model*/}
+  <Modal
+  isOpen={openAddEditModal.isShow}
+  onRequestClose={()=>{}}
+  style={{
+    overlay:{
+      backgroundColor: "rgba(0,0,0,0,2)",
+      zIndex:999
+    },
+  }}
+  appElement={document.getElementById("root")}
+  className="model-box">
+    <AddEditTravelStroy
+    type={openAddEditModal.type}
+    storyInfo={openAddEditModal.data}
+    onClose={()=>{
+      setOpenAddEditModal({isShow:false,type:"add",data:null});
+    }} getAllTravelStories={getAllTravelStories}/>
+  </Modal>
+
+
 };
 
 export default Home;
