@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {MdAdd, MdDeleteOutline,MdUpdate,MdClose} from "react-icons/md";
+import DataSelector from './Input/DataSelector';
 
 const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) => {
+    const[title,setTitle]=React.useState("");
+    const [visitedDate,setVisitedDate]=React.useState(null);
+    const [story,setStory]=React.useState("");
+    const [visitedLocation,setVisitedLocation]=useState([]);
+
     const handleAddOrUpdateClick=()=>{};
+    // const [date,setDate]=React.useState(new Date());
   return (
     <div>
         <div className='flex items-center justify-between'>
@@ -39,10 +46,21 @@ const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) =
                 <label htmlFor="input-label">TITLE</label>
                 <input type="text" className='text-2xl text-slate-950 outline-none'
                 placeholder='A day at The Freat Wall' 
+                value={title}
+                onChange={({target})=>setTitle(target.value)}
                 />
 
                 <div className='my-3'>
-                    <DataSelector/>
+                    <DataSelector date={visitedDate} setDate={setVisitedDate}/>
+                </div>
+
+                <div className='flex flex-col gap-2 mt-4'>
+                    <label className='input-label'>STORY</label>
+                    <textarea type="text" 
+                    className='text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded'
+                    placeholder='Your Story'
+                    rows={10}
+                    value={({target})=>setStory(target.value)}/>
                 </div>
 
             </div>
