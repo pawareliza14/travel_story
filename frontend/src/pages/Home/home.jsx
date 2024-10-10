@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
 import { MdAdd } from 'react-icons/md';
 import TravelStoryCard from '../../components/Cards/TravelStoryCard';
-// import Modal from 'react-modal'; 
-// import AddEditTravelStory from '../../components/AddEditTravelStory'; 
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
+import AddEditTravelStory from '../../components/AddEditTravelStory'; 
 
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -129,17 +130,8 @@ const Home = () => {
         </div>
       </div>
 
-
-      <button className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10'
-      onClick={()=>{
-        setOpenAddEditModal({isShow: true,type:"add",data:null});
-      }}>
-        <MdAdd className="text-[32px] text-white"/>
-      </button>
-      <ToastContainer/>
-
-      {/* 
-      Add & edit travel story modal 
+ 
+      {/* Add & edit travel story modal  */}
       <Modal
         isOpen={openAddEditModal.isShow}
         onRequestClose={() => {}}
@@ -160,7 +152,16 @@ const Home = () => {
           getAllTravelStories={getAllTravelStories}
         />
       </Modal>
-      */}
+      
+
+
+      <button className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10'
+      onClick={()=>{
+        setOpenAddEditModal({isShow: true,type:"add",data:null});
+      }}>
+        <MdAdd className="text-[32px] text-white"/>
+      </button>
+      <ToastContainer/>
 
     </div>
   );
