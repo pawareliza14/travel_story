@@ -73,7 +73,7 @@ const Home = () => {
 
     try {
       const response = await axiosInstance.put(
-        "update-is-favourite/" + storyId,
+        "/update-isFavourite/" + storyId,
         {
           isFavourite: !storyData.isFavourite,
         }

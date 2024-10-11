@@ -302,24 +302,29 @@ app.delete("/delete-story/:id", authenticateToken, async(req,res) => {
 })
 
 //Update isFavourite 
-app.put("update-isFavourite/:id", authenticateToken, async(req,res) => {
+app.put("/update-isFavourite/:id", authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { isFavourite} = res.body;
-    const {userId} = userId;
+    const { isFavourite } = req.body;  // Correctly destructure from req.body
+    const userId = req.user.userId; // Assuming userId is in req.user after authentication
 
-    const travelStory = await TravelStory.findOne({_id: id, userId: userId});
+    try {
+        const travelStory = await TravelStory.findOne({ _id: id, userId: userId });
 
-    if(!travelStory){
-        return res
-        .status(404)
-        .json({error: true, message: "Travel story not found"});
+        if (!travelStory) {
+            return res.status(404).json({ error: true, message: "Travel story not found" });
+        }
+
+        travelStory.isFavourite = isFavourite;
+
+        const updatedStory = await travelStory.save(); // Save the updated story
+
+        res.status(200).json({ message: "Updated isFavourite successfully", story: updatedStory });
+    } catch (error) {
+        console.error("Error updating travel story:", error);
+        res.status(500).json({ error: true, message: "An unexpected error occurred" });
     }
-
-    travelStory.isFavourite = isFavourite;
-
-    await travelStory.save();
-    res.status(200).json({message: "Updated isFavourite successfully"});
 });
+
 
 //Search travel story
 app.get('/search', authenticateToken, async (req, res) => {
