@@ -29,9 +29,9 @@ const TravelStoryCard = ({imgUrl,
         <div className='flex item-center gap-3'>
           <div className='flex-1'>
             <h6 className='text-sm font-medium'>{title}</h6>
-            <span className='text-xs text-slate-500'>
+            {/* <span className='text-xs text-slate-500'>
               {date ? moment(date).format("DD MM YYYY"): "-"}
-            </span>
+            </span> */}
           </div>
         </div>
 
