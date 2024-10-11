@@ -1,13 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useDebugValue, useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
+import { MdAdd } from 'react-icons/md';
 import TravelStoryCard from '../../components/Cards/TravelStoryCard';
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
+import AddEditTravelStory from '../../components/AddEditTravelStory'; 
+
+import { ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStories] = useState([]);
+
+  const [openAddEditModal,setOpenAddEditModal]=useState({
+    isShow:false,
+    type:"add",
+    data:null,
+  });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,7 +69,23 @@ const Home = () => {
 
   // Handle update favourite
   const updateIsFavourite = async (storyData) => {
-    // Update favourite logic here
+    const storyId = storyData._id;
+
+    try {
+      const response = await axiosInstance.put(
+        "update-is-favourite/" + storyId,
+        {
+          isFavourite: !storyData.isFavourite,
+        }
+      );
+
+      if (response.data && response.data.story) {
+        toast.success("Story Updated Successfully!")
+        getAllTravelStories();
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    }
   };
 
   useEffect(() => {
@@ -99,6 +129,40 @@ const Home = () => {
           <div className='w-[320px]'></div>
         </div>
       </div>
+
+ 
+      {/* Add & edit travel story modal  */}
+      <Modal
+        isOpen={openAddEditModal.isShow}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999
+          },
+        }}
+        appElement={document.getElementById("root")}
+        className="model-box">
+        <AddEditTravelStory
+          type={openAddEditModal.type}
+          storyInfo={openAddEditModal.data}
+          onClose={() => {
+            setOpenAddEditModal({ isShow: false, type: "add", data: null });
+          }} 
+          getAllTravelStories={getAllTravelStories}
+        />
+      </Modal>
+      
+
+
+      <button className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10'
+      onClick={()=>{
+        setOpenAddEditModal({isShow: true,type:"add",data:null});
+      }}>
+        <MdAdd className="text-[32px] text-white"/>
+      </button>
+      <ToastContainer/>
+
     </div>
   );
 };
