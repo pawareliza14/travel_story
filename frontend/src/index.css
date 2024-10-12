@@ -15,7 +15,7 @@
   }
 }
 
-/* cursor scrollbar styles*/
+/* custom scrollbar styles*/
 .scrollbar::-webkit-scrollbar {
   width: 3px;
   height: 3px;
