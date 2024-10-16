@@ -9,11 +9,11 @@ import uploadImage from '../utils/uploadImage';
 import axiosInstance from '../utils/axiosInstance';
 
 const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) => {
-    const[title,setTitle]=React.useState("");
-    const [visitedDate,setVisitedDate]=React.useState(null);
-    const [story,setStory]=React.useState("");
-    const [visitedLocation,setVisitedLocation]=useState([]);
-    const [storyImg, setStoryImg] = useState(null);
+    const[title,setTitle]=React.useState(storyInfo?.title || "");
+    const [visitedDate,setVisitedDate]=React.useState(storyInfo?.visitedDate || null);
+    const [story,setStory]=React.useState(storyInfo?.story || null);
+    const [visitedLocation,setVisitedLocation]=useState(storyInfo?.visitedLocation || []);
+    const [storyImg, setStoryImg] = useState(storyInfo?.imageUrl || null);
 
     const [error,setError]=useState("");
 
@@ -50,7 +50,6 @@ const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) =
     }
 };
 
-
     //update travel story
     const updateTravelStory=async()=>{}
 
@@ -82,7 +81,7 @@ const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) =
     const handleDeleteStoryImg=async()=>{}
 
     return (
-    <div>
+    <div className='relative'>
         <div className='flex items-center justify-between'>
             <h5 className='text-xl font-medium text-slate-700'>
                 {type==="add"? "Add Story" : "Update Story"}
@@ -100,9 +99,6 @@ const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) =
                         <MdUpdate className="text-lg"/>UPDATE STORY
                     </button>
 
-                    {/* <button className='btn-small btn-delete' onClick={onclose}>
-                        <MdDeleteOutline className="text-lg"/>DELETE
-                    </button> */}
                     </>)}
 
                     <button className='' onClick={onClose}>
