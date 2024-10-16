@@ -1,25 +1,32 @@
-import React, { useDebugValue, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
 import { MdAdd } from 'react-icons/md';
 import TravelStoryCard from '../../components/Cards/TravelStoryCard';
 import Modal from 'react-modal';
-Modal.setAppElement('#root');
+import ViewTravelStory from './ViewTravelStory';
 import AddEditTravelStory from '../../components/AddEditTravelStory'; 
-
-import { ToastContainer,toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+Modal.setAppElement('#root');
 
 const Home = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStories] = useState([]);
 
-  const [openAddEditModal,setOpenAddEditModal]=useState({
-    isShow:false,
-    type:"add",
-    data:null,
+  const [openAddEditModal, setOpenAddEditModal] = useState({
+    isShow: false,
+    type: "add",
+    data: null,
+  });
+
+  const [openViewModal, setOpenViewModal] = useState({
+    isShow: false,
+    type: "view",
+    data: null,
   });
 
   const [loading, setLoading] = useState(true);
@@ -59,12 +66,12 @@ const Home = () => {
 
   // Handle edit story click
   const handleEdit = (data) => {
-    // Edit logic here
+    setOpenAddEditModal({ isShow: true, type: "edit", data:data });
   };
 
   // Handle travel story click
   const handleViewStory = (data) => {
-    // View story logic here
+    setOpenViewModal({ isShow: true, type: "view", data });
   };
 
   // Handle update favourite
@@ -80,7 +87,7 @@ const Home = () => {
       );
 
       if (response.data && response.data.story) {
-        toast.success("Story Updated Successfully!")
+        toast.success("Story Updated Successfully!");
         getAllTravelStories();
       }
     } catch (error) {
@@ -130,11 +137,10 @@ const Home = () => {
         </div>
       </div>
 
- 
-      {/* Add & edit travel story modal  */}
+      {/* Add & Edit Travel Story Modal  */}
       <Modal
         isOpen={openAddEditModal.isShow}
-        onRequestClose={() => {}}
+        onRequestClose={() => setOpenAddEditModal({ isShow: false, type: "add", data: null })}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -153,16 +159,37 @@ const Home = () => {
         />
       </Modal>
       
+      {/* View Travel Story Modal  */}
+      <Modal
+        isOpen={openViewModal.isShow}
+        onRequestClose={() => setOpenViewModal({ isShow: false, type: "view", data: null })}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999
+          },
+        }}
+        appElement={document.getElementById("root")}
+        className="model-box">
+        <ViewTravelStory storyInfo={openViewModal.data || null} 
+        onClose={()=>{
+          setOpenViewModal((prevState)=>({...prevState,isShow:false}));
+        }} 
+        onEditClick={()=>{
+          setOpenViewModal((prevState)=>({...prevState,isShow:false}));
+          handleEdit(openViewModal.data || null)
+        }} 
+        onDeleteClick={()=>{}}/>
+      </Modal>
 
-
-      <button className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10'
-      onClick={()=>{
-        setOpenAddEditModal({isShow: true,type:"add",data:null});
-      }}>
-        <MdAdd className="text-[32px] text-white"/>
+      <button 
+        className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10'
+        onClick={() => {
+          setOpenAddEditModal({ isShow: true, type: "add", data: null });
+        }}>
+        <MdAdd className="text-[32px] text-white" />
       </button>
-      <ToastContainer/>
-
+      <ToastContainer />
     </div>
   );
 };
