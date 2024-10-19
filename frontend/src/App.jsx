@@ -3,7 +3,7 @@ import React from 'react'
 
 import Login from './pages/Auth/login.jsx';
 import SignUp from './pages/Auth/signup.jsx';
-import Home from './pages/Home/Home.jsx';
+import Home from './pages/Home/home.jsx';
 
 const App = () => {
   return (

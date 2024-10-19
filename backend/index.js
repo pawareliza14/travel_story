@@ -192,36 +192,33 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 
 //Delete an image from uploads folder
-app.delete("/delete-image", async(req,res) => {
-    const { imageUrl} = req.query;
+app.delete("/delete-image", async (req, res) => {
+  const { imageUrl } = req.query;
 
-    if( !imageUrl){
-        return res.status(400)
-        .json ({ error: true,  message: "imageUrl parameter required"})
-    }
+  if (!imageUrl) {
+    return res.status(400).json({ error: true, message: "imageUrl parameter required" });
+  }
 
-    try{
-    //Extract the filename from the imageUrl
+  try {
+    // Extract the filename from the imageUrl
     const filename = path.basename(imageUrl);
 
-    //Define the file path
+    // Define the file path
     const filePath = path.join(__dirname, 'uploads', filename);
 
-    //Check if the file exists
-    if(fs.existsSync(filePath)){
-        //Delete the file from the uploads folder
-        fs.unlinkSync(filePath);
-        res.status(200).json({message: "Image deleted successfully"});
-        res.status(200).json({message:"Image deleted successfully"});
-    } else{
-        res.status(200).json({error: true, message:"Image not found"});
-    } 
-
-    //
-    } catch(error){
-        res.status(500).json({error: true, message: error.message});
+    // Check if the file exists
+    if (fs.existsSync(filePath)) {
+      // Delete the file from the uploads folder
+      fs.unlinkSync(filePath);
+      res.status(200).json({ message: "Image deleted successfully" });
+    } else {
+      res.status(404).json({ error: true, message: "Image not found" });
     }
+  } catch (error) {
+    res.status(500).json({ error: true, message: error.message });
+  }
 });
+
 
 //Edit travel story
 app.post("/edit-story/:id", authenticateToken, async(req,res) => {
@@ -230,7 +227,7 @@ app.post("/edit-story/:id", authenticateToken, async(req,res) => {
     const { userId} = req.user;
 
     //Validate required fields
-    if(!title || !story || !visitedDate || !imageUrl || !visitedDate){
+    if(!title || !story || !visitedDate  || !visitedLocation){
         return res
         .status(400)
         .json({error: true, message: "All fields are required"});
