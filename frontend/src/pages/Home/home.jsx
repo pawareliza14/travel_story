@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import ViewTravelStory from './ViewTravelStory';
 import AddEditTravelStory from '../../components/AddEditTravelStory'; 
 import { ToastContainer, toast } from 'react-toastify';
+import SearchBar from '../../components/Input/SearchBar';
 import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
@@ -16,6 +17,8 @@ const Home = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStories] = useState([]);
+
+  const [searchQuery,setsearchQuery]=useState('')
 
   const [openAddEditModal, setOpenAddEditModal] = useState({
     isShow: false,
@@ -115,14 +118,33 @@ const Home = () => {
     }
 
   }
+
+  //search story
+  const onSearchStory=async (query) =>{
+    try{
+      const response = await axiosInstance.delete("/delete-story/" + storyId);
+
+    } catch(error){
+      //Handle unexpected errors
+      console.log("An unexpected error occured. Please try again.");
+    }
+  }
+
   useEffect(() => {
     getAllTravelStories();
     getUserInfo();
   }, []);
 
+  const handleClearSearch=()=>{}
+
   return (
     <div>
-      <Navbar userInfo={userInfo} />
+      <Navbar userInfo={userInfo} 
+      searchQuery={searchQuery} 
+      setSearchQuery={setsearchQuery}
+      handleSearch={onSearchStory}
+      handleClearSearch={handleClearSearch}
+      />
       <div className='container mx-auto py-10'>
         <div className='flex gap-7'>
           <div className='flex-1'>
