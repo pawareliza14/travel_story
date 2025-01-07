@@ -67,7 +67,7 @@ const ImageSelector = ({image,setImage,handleDeleteImg}) => {
                 <FaRegFileImage className='text-xl text-cyan-500'/>
             </div>
 
-            <p className='text-sm text-slate-500'>Brows image files to upload</p>
+            <p className='text-sm text-slate-500'>Browse image files to upload</p>
         </button>) :(
             <div className='w-full relative'>
                 <img src={previewUrl} alt="Selected"

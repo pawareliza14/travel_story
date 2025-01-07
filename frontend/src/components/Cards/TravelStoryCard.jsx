@@ -2,6 +2,7 @@ import React from 'react'
 import moment from "moment/moment";
 import { FaHeart } from 'react-icons/fa';
 import { GrMapLocation } from 'react-icons/gr';
+
 const TravelStoryCard = ({imgUrl,
   title,
   date,
