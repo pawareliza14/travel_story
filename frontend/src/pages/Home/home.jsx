@@ -9,6 +9,12 @@ import ViewTravelStory from './ViewTravelStory';
 import AddEditTravelStory from '../../components/AddEditTravelStory'; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EmptyCard from '../../components/Cards/EmptyCard';
+
+import { DayPicker } from 'react-day-picker';
+import moment from 'moment';
+import FilterinfoTitle from '../../components/Cards/FilterinfoTitle';
+import { getEmptyCardImg,getEmptyCardMessage } from '../../utils/helper';
 
 Modal.setAppElement('#root');
 
@@ -16,6 +22,11 @@ const Home = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [allStories, setAllStories] = useState([]);
+
+  const [searchQuery,setsearchQuery]=useState('');
+
+  const [filterType,setFilterType]=useState('');
+  const [dateRange, setDateRange]=useState({form:null, to:null});
 
   const [openAddEditModal, setOpenAddEditModal] = useState({
     isShow: false,
@@ -57,6 +68,8 @@ const Home = () => {
       } else {
         setAllStories([]);
       }
+
+
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
     } finally {
@@ -71,7 +84,7 @@ const Home = () => {
 
   // Handle travel story click
   const handleViewStory = (data) => {
-    setOpenViewModal({ isShow: true, type: "view", data });
+    setOpenViewModal({ isShow: true, type: "view", data:data });
   };
 
   // Handle update favourite
@@ -88,7 +101,18 @@ const Home = () => {
 
       if (response.data && response.data.story) {
         toast.success("Story Updated Successfully!");
-        getAllTravelStories();
+
+        if (filterType ==="search" && searchQuery)
+        {
+          onSearchStory(searchQuery);
+        }
+        else if(filterType==="date")
+        {
+          filterStoriesByDate(dateRange);
+        }
+        else{
+          getAllTravelStories();
+        }
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
@@ -113,17 +137,98 @@ const Home = () => {
       //Handle unexpected errors
       console.log("An unexpected error occured. Please try again.");
     }
+  };
 
+
+  //search story
+  const onSearchStory=async (query) =>{
+    try{
+      const response = await axiosInstance.get("/search" ,{
+        params:{
+          query,
+        },
+      });
+
+      if(response.data && response.data.stories)
+      {
+        setFilterType("search");
+        setAllStories(response.data.stories);
+      }
+    } catch(error){
+      //Handle unexpected errors
+      console.log("An unexpected error occured. Please try again.");
+    }
   }
+
   useEffect(() => {
     getAllTravelStories();
     getUserInfo();
   }, []);
 
+  const handleClearSearch=()=>{
+    setFilterType('');
+    getAllTravelStories();
+  }
+
+   //Handle filter travel story by date range
+   const filterStoriesByDate = async (day)=>{ 
+    try{
+      const startDate=day.from ? moment(day.from).valueOf() :null;
+      const endDate=day.to ? moment(day.to).valueOf():null;
+
+      if(startDate && endDate)
+      {
+        const response =await axiosInstance.get("/travel-stories/filter",{
+          params:{startDate,endDate},
+        });
+
+        if(response.data && response.data.stories)
+        {
+          setFilterType("date");
+          setAllStories(response.data.stories);
+        }
+      }
+    }catch(error)
+    {
+      console.log("An unexpected error occured. Please try again.");
+
+    }
+    
+   }; 
+
+  //Handle date range select
+  const handleDayClick= (day)=>{
+    setDateRange(day);
+    filterStoriesByDate(day);
+  }
+
+  const resetFilter=()=>{
+    setDateRange({from:null,to:null});
+    setFilterType("");
+    getAllTravelStories();
+  };
+
   return (
     <div>
-      <Navbar userInfo={userInfo} />
+      
+      <Navbar 
+      userInfo={userInfo} 
+      searchQuery={searchQuery} 
+      setSearchQuery={setsearchQuery}
+      onSearchNote={onSearchStory}
+      handleClearSearch={handleClearSearch}
+      />
+
       <div className='container mx-auto py-10'>
+
+      <FilterinfoTitle
+      filterType={filterType}
+      filterDates={dateRange}
+      onClear={()=>{
+        resetFilter();
+      }}
+      />
+
         <div className='flex gap-7'>
           <div className='flex-1'>
             {loading ? (
@@ -148,12 +253,25 @@ const Home = () => {
                 ))}
               </div>
             ) : (
-              <div className='empty-state'>
-                <p>No stories available. Start by adding your first travel story!</p>
-              </div>
+              <EmptyCard imgSrc={getEmptyCardImg(filterType)}
+              message={getEmptyCardMessage(filterType)}
+              /> 
             )}
           </div>
-          <div className='w-[320px]'></div>
+
+          <div className='w-[350px]'>
+            <div className='bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg'>
+              <div className='p-3'>
+                <DayPicker
+                  captionLayout='dropdown-buttons'
+                  mode='range'
+                  selected={dateRange}
+                  onSelect={handleDayClick}
+                  pagedNavigation
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -214,6 +332,6 @@ const Home = () => {
       <ToastContainer />
     </div>
   );
-};
+}
 
 export default Home;

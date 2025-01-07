@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 import uploadImage from '../utils/uploadImage';
 import axiosInstance from '../utils/axiosInstance';
 
-const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) => {
+const AddEditTravelStory = ({ storyInfo, type, onClose, getAllTravelStories }) => 
+{
     const[title,setTitle]=React.useState(storyInfo?.title || "");
     const [visitedDate,setVisitedDate]=React.useState(storyInfo?.visitedDate || null);
     const [story,setStory]=React.useState(storyInfo?.story || null);
